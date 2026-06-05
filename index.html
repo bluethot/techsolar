@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SolarMax Admin - Premium Management System</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #F5A623;
+            --primary-dark: #e5941f;
+            --dark: #1A3A2A;
+            --dark-light: #264936;
+            --blue: #4A90D9;
+            --blue-light: #e8f4fd;
+            --green: #27AE60;
+            --green-light: #e6f7ee;
+            --orange: #E67E22;
+            --orange-light: #fef3e6;
+            --red: #E74C3C;
+            --red-light: #fde8e8;
+            --gray-bg: #f0f2f5;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-500: #adb5bd;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+            --whatsapp: #25D366;
+            --white: #ffffff;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow: 0 2px 12px rgba(0,0,0,0.06);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.08);
+            --shadow-xl: 0 20px 60px rgba(0,0,0,0.12);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition: all 0.25s ease;
+            --sidebar-width: 260px;
+            --navbar-height: 64px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--gray-bg);
+            color: #1a1a1a;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* ========== SCROLLBAR ========== */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gray-500); }
+
+        /* ========== TOP NAVBAR ========== */
+        .admin-navbar {
+            background: var(--white);
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 24px;
+            height: var(--navbar-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .admin-navbar .brand {
+            font-weight: 700;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark);
+        }
+        .admin-navbar .brand .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), #e5941f);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-wrapper {
+            position: relative;
+        }
+        .search-wrapper input {
+            background: var(--gray-100);
+            border: 2px solid transparent;
+            border-radius: 25px;
+            padding: 10px 16px 10px 42px;
+            font-size: 13px;
+            width: 280px;
+            transition: var(--transition);
+            color: var(--gray-700);
+        }
+        .search-wrapper input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            width: 320px;
+            box-shadow: 0 0 0 4px rgba(245,166,35,0.1);
+        }
+        .search-wrapper .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-500);
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gray-100);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: var(--transition);
+            font-size: 18px;
+            color: var(--gray-700);
+        }
+        .icon-btn:hover { background: var(--gray-200); }
+        .icon-btn .badge-dot {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 9px;
+            height: 9px;
+            background: var(--red);
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 25px;
+            transition: var(--transition);
+        }
+        .user-profile:hover { background: var(--gray-100); }
+        .user-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--dark), var(--dark-light));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 15px;
+        }
+        .user-info { line-height: 1.2; }
+        .user-info .user-name { font-weight: 600; font-size: 13px; color: var(--gray-700); }
+        .user-info .user-role { font-size: 11px; color: var(--gray-500); }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed;
+            top: var(--navbar-height);
+            left: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: var(--white);
+            border-right: 1px solid var(--gray-200);
+            overflow-y: auto;
+            z-index: 999;
+            padding: 16px 12px;
+            transition: var(--transition);
+        }
+
+        .sidebar-section {
+            margin-bottom: 20px;
+        }
+        .sidebar-section .section-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gray-500);
+            padding: 8px 16px 12px;
+            font-weight: 700;
+        }
+
+        .sidebar .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--gray-600);
+            border-radius: 10px;
+            margin: 2px 0;
+            transition: var(--transition);
+            position: relative;
+            text-decoration: none;
+        }
+        .sidebar .nav-item:hover {
+            background: var(--gray-100);
+            color: var(--dark);
+        }
+        .sidebar .nav-item.active {
+            background: linear-gradient(135deg, rgba(245,166,35,0.1), rgba(245,166,35,0.05));
+            color: var(--dark);
+            font-weight: 600;
+            box-shadow: inset 3px 0 0 var(--primary);
+        }
+        .sidebar .nav-item i {
+            font-size: 18px;
+            width: 22px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .sidebar .nav-item .nav-badge {
+            margin-left: auto;
+            font-size: 10px;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-weight: 600;
+            min-width: 22px;
+            text-align: center;
+        }
+        .nav-badge.red { background: var(--red-light); color: var(--red); }
+        .nav-badge.orange { background: var(--orange-light); color: var(--orange); }
+        .nav-badge.green { background: var(--green-light); color: var(--green); }
+        .nav-badge.blue { background: var(--blue-light); color: var(--blue); }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--navbar-height);
+            padding: 24px;
+            min-height: calc(100vh - var(--navbar-height));
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page { display: none; }
+        .page.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+        .page-header h3 {
+            font-weight: 700;
+            font-size: 22px;
+            margin-bottom: 4px;
+            color: var(--dark);
+        }
+        .page-header .breadcrumb-text {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* ========== STATS CARDS ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--gray-200);
+        }
+        .stat-card .stat-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        .stat-icon-wrap.blue-bg { background: var(--blue-light); color: var(--blue); }
+        .stat-icon-wrap.green-bg { background: var(--green-light); color: var(--green); }
+        .stat-icon-wrap.orange-bg { background: var(--orange-light); color: var(--orange); }
+        .stat-icon-wrap.red-bg { background: var(--red-light); color: var(--red); }
+        .stat-icon-wrap.purple-bg { background: #f0e6f6; color: #8e44ad; }
+        .stat-icon-wrap.yellow-bg { background: #fef9e7; color: var(--primary); }
+
+        .stat-card .stat-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-top: 2px;
+        }
+        .stat-card .stat-trend {
+            font-size: 11px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        .stat-trend.up { color: var(--green); }
+        .stat-trend.down { color: var(--red); }
+        .stat-trend.neutral { color: var(--gray-500); }
+
+        /* ========== CONTENT CARDS ========== */
+        .content-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .content-card .card-top {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .content-card .card-top h5 {
+            font-weight: 700;
+            font-size: 15px;
+            margin: 0;
+            color: var(--dark);
+        }
+        .content-card .card-body-wrap {
+            padding: 20px;
+        }
+
+        /* ========== TABLE ========== */
+        .table-wrap {
+            overflow-x: auto;
+        }
+        .modern-table {
+            width: 100%;
+            font-size: 13px;
+            border-collapse: collapse;
+        }
+        .modern-table thead th {
+            background: var(--gray-100);
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--gray-600);
+            padding: 12px 14px;
+            white-space: nowrap;
+            border-bottom: 2px solid var(--gray-200);
+            text-align: left;
+        }
+        .modern-table tbody td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--gray-100);
+            vertical-align: middle;
+        }
+        .modern-table tbody tr {
+            transition: var(--transition);
+        }
+        .modern-table tbody tr:hover {
+            background: #fafbfc;
+        }
+        .modern-table .customer-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .customer-cell .cust-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        /* ========== STATUS BADGES ========== */
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-badge::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .sb-new { background: #e8f4fd; color: #1a6eb5; }
+        .sb-new::before { background: #4A90D9; }
+        .sb-contacted { background: #fef8ee; color: #b86d1a; }
+        .sb-contacted::before { background: #E67E22; }
+        .sb-converted { background: #e6f7ee; color: #1a7a3a; }
+        .sb-converted::before { background: #27AE60; }
+        .sb-lost { background: #fde8e8; color: #b82020; }
+        .sb-lost::before { background: #E74C3C; }
+        .sb-active { background: #e8f4fd; color: #1a6eb5; }
+        .sb-active::before { background: #4A90D9; }
+        .sb-inprogress { background: #fef9e7; color: #8a6d14; }
+        .sb-inprogress::before { background: #F5A623; }
+        .sb-completed { background: #e6f7ee; color: #1a7a3a; }
+        .sb-completed::before { background: #27AE60; }
+        .sb-pending { background: #fef8ee; color: #b86d1a; }
+        .sb-pending::before { background: #E67E22; }
+        .sb-overdue { background: #fde8e8; color: #b82020; }
+        .sb-overdue::before { background: #E74C3C; }
+        .sb-paid { background: #e6f7ee; color: #1a7a3a; }
+        .sb-paid::before { background: #27AE60; }
+
+        /* ========== BUTTONS ========== */
+        .btn-sm-action {
+            padding: 6px 12px;
+            font-size: 11px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-sm-action:hover { opacity: 0.85; transform: translateY(-1px); }
+        .btn-view { background: #e8f4fd; color: #1a6eb5; }
+        .btn-edit { background: #fef8ee; color: #b86d1a; }
+        .btn-success-action { background: #e6f7ee; color: #1a7a3a; }
+        .btn-danger-action { background: #fde8e8; color: #b82020; }
+        .btn-wa { background: #e8f5e9; color: #1fa851; }
+        .btn-primary-lg {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-primary-lg:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(245,166,35,0.3);
+        }
+        .btn-outline-lg {
+            background: white;
+            border: 2px solid var(--gray-300);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--gray-700);
+        }
+        .btn-outline-lg:hover {
+            border-color: var(--primary);
+            color: var(--dark);
+        }
+
+        /* ========== MODAL ========== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeInOverlay 0.2s ease;
+        }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+
+        .modal-dialog-custom {
+            background: white;
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 520px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-dialog-custom.wide { max-width: 700px; }
+        .modal-header-clean {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header-clean h5 { font-weight: 700; font-size: 17px; margin: 0; }
+        .modal-close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--gray-100);
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .modal-close-btn:hover { background: var(--gray-200); }
+        .modal-body-clean { padding: 24px; }
+        .modal-footer-clean {
+            padding: 16px 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            font-weight: 600;
+            font-size: 12px;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-input-modern {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 13px;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .form-input-modern:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(245,166,35,0.08);
+        }
+        textarea.form-input-modern { resize: vertical; min-height: 80px; }
+
+        /* ========== CHART CONTAINER ========== */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        /* ========== QUICK ACTIONS ========== */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .quick-action-chip {
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ========== TOAST ========== */
+        .toast-modern {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 9999;
+            background: var(--dark);
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            box-shadow: var(--shadow-xl);
+            animation: toastIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 380px;
+        }
+        @keyframes toastIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .toast-modern.success { border-left: 4px solid var(--green); }
+        .toast-modern.error { border-left: 4px solid var(--red); }
+        .toast-modern.warning { border-left: 4px solid var(--orange); }
+        .toast-modern.info { border-left: 4px solid var(--blue); }
+
+        /* ========== PAGINATION ========== */
+        .pagination-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 16px;
+            font-size: 12px;
+            color: var(--gray-600);
+        }
+        .pagination-btns {
+            display: flex;
+            gap: 4px;
+        }
+        .page-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .page-btn:hover { background: var(--gray-100); }
+        .page-btn.active {
+            background: var(--primary);
+            color: var(--dark);
+            border-color: var(--primary);
+            font-weight: 700;
+        }
+
+        /* ========== TABS ========== */
+        .tab-nav-wrap {
+            display: flex;
+            gap: 0;
+            border-bottom: 2px solid var(--gray-200);
+            margin-bottom: 20px;
+        }
+        .tab-nav-item {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--gray-600);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: var(--transition);
+        }
+        .tab-nav-item.active {
+            color: var(--dark);
+            border-bottom-color: var(--primary);
+            font-weight: 600;
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-xl);
+            }
+            .sidebar.mobile-open { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .search-wrapper input { width: 180px; }
+            .search-wrapper input:focus { width: 200px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .search-wrapper { display: none; }
+            .user-info { display: none; }
+            .main-content { padding: 16px; }
+        }
+
+        /* ========== RATING STARS ========== */
+        .rating-stars {
+            color: var(--primary);
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        /* ========== OVERDUE ROW ========== */
+        .row-overdue {
+            background: #fff8f8 !important;
+            border-left: 3px solid var(--red);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ==================== TOP NAVBAR ==================== -->
+<nav class="admin-navbar">
+    <div style="display:flex;align-items:center;gap:16px;">
+        <button class="icon-btn d-lg-none" onclick="toggleSidebar()" style="border-radius:8px;">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="brand">
+            <div class="logo-icon">☀️</div>
+            SolarMax <span style="font-weight:400;color:var(--gray-500);font-size:14px;">Admin</span>
+        </div>
+    </div>
+    <div class="nav-right">
+        <div class="search-wrapper">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" placeholder="Search customers, jobs, leads...">
+        </div>
+        <button class="icon-btn" onclick="showToast('🔔 5 new notifications', 'info')">
+            <i class="bi bi-bell"></i>
+            <span class="badge-dot"></span>
+        </button>
+        <button class="icon-btn" onclick="showToast('💬 3 unread messages', 'info')">
+            <i class="bi bi-chat-dots"></i>
+        </button>
+        <div class="user-profile" onclick="switchPage('settings')">
+            <div class="user-avatar">SA</div>
+            <div class="user-info">
+                <div class="user-name">Super Admin</div>
+                <div class="user-role">Administrator</div>
+            </div>
+            <i class="bi bi-chevron-down" style="font-size:12px;color:var(--gray-500);"></i>
+        </div>
+    </div>
+</nav>
+
+<!-- ==================== SIDEBAR ==================== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+        <div class="section-label">Main</div>
+        <div class="nav-item active" onclick="switchPage('dashboard')">
+            <i class="bi bi-grid-fill"></i> Dashboard
+        </div>
+        <div class="nav-item" onclick="switchPage('analytics')">
+            <i class="bi bi-graph-up"></i> Analytics
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="section-label">Management</div>
+        <div class="nav-item" onclick="switchPage('leads')">
+            <i class="bi bi-people-fill"></i> Leads
+            <span class="nav-badge blue">47</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('customers')">
+            <i class="bi bi-person-check-fill"></i> Customers
+        </div>
+        <div class="nav-item" onclick="switchPage('installers')">
+            <i class="bi bi-tools"></i> Installers
+            <span class="nav-badge green">12</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('agents')">
+            <i class="bi bi-headset"></i> Support Agents
+            <span class="nav-badge blue">8</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('jobs')">
+            <i class="bi bi-briefcase-fill"></i> Installation Jobs
+            <span class="nav-badge orange">23</span>
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="section-label">Finance</div>
+        <div class="nav-item" onclick="switchPage('finance')">
+            <i class="bi bi-cash-stack"></i> Finance Overview
+        </div>
+        <div class="nav-item" onclick="switchPage('payments')">
+            <i class="bi bi-credit-card-fill"></i> Payment Tracking
+            <span class="nav-badge red">5</span>
+        </div>
+        <div class="nav-item" onclick="switchPage('products')">
+            <i class="bi bi-box-seam-fill"></i> Products & Pricing
+        </div>
+    </div>
+
+    <div class="sidebar-section">
+        <div class="section-label">System</div>
+        <div class="nav-item" onclick="switchPage('settings')">
+            <i class="bi bi-gear-fill"></i> Settings
+        </div>
+        <div class="nav-item" onclick="switchPage('reports')">
+            <i class="bi bi-file-earmark-bar-graph"></i> Reports
+        </div>
+        <div class="nav-item" onclick="showToast('👋 Logged out successfully', 'success')">
+            <i class="bi bi-box-arrow-right"></i> Logout
+        </div>
+    </div>
+</aside>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<div class="main-content" id="mainContent">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="page active" id="page-dashboard">
+        <div class="page-header">
+            <h3>📊 Dashboard Overview</h3>
+            <span class="breadcrumb-text">Home / Dashboard</span>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="switchPage('leads')">
+                <div class="stat-icon-wrap blue-bg">📥</div>
+                <div>
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Total Leads</div>
+                    <div class="stat-trend up">↑ 12% vs last month</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="switchPage('jobs')">
+                <div class="stat-icon-wrap orange-bg">🔧</div>
+                <div>
+                    <div class="stat-value">18</div>
+                    <div class="stat-label">Active Installations</div>
+                    <div class="stat-trend neutral">5 in progress now</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrap green-bg">✅</div>
+                <div>
+                    <div class="stat-value">142</div>
+                    <div class="stat-label">Completed Jobs</div>
+                    <div class="stat-trend up">↑ 8% this month</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="switchPage('finance')">
+                <div class="stat-icon-wrap yellow-bg">💰</div>
+                <div>
+                    <div class="stat-value">₦18.5M</div>
+                    <div class="stat-label">Revenue (June 2026)</div>
+                    <div class="stat-trend up">↑ 15% vs May</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="switchPage('payments')">
+                <div class="stat-icon-wrap red-bg">⚠️</div>
+                <div>
+                    <div class="stat-value">31</div>
+                    <div class="stat-label">Pending Payments</div>
+                    <div class="stat-trend down">5 overdue</div>
+                </div>
+            </div>
+            <div class="stat-card" onclick="switchPage('installers')">
+                <div class="stat-icon-wrap purple-bg">👷</div>
+                <div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-label">Active Installers</div>
+                    <div class="stat-trend neutral">3 available now</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Chart -->
+            <div class="col-lg-8">
+                <div class="content-card">
+                    <div class="card-top">
+                        <h5>📈 Revenue Trend (Last 6 Months)</h5>
+                        <button class="btn-sm-action btn-view">Export</button>
+                    </div>
+                    <div class="card-body-wrap">
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="col-lg-4">
+                <div class="content-card">
+                    <div class="card-top"><h5>🕐 Recent Activity</h5></div>
+                    <div class="card-body-wrap" style="padding:12px 16px;">
+                        <div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                            <div style="font-size:12px;font-weight:600;">🔵 New Lead</div>
+                            <div style="font-size:12px;">Ade Bello - 3kVA, Ikeja</div>
+                            <small style="color:var(--gray-500);">5 min ago</small>
+                        </div>
+                        <div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                            <div style="font-size:12px;font-weight:600;">🟢 Job Completed</div>
+                            <div style="font-size:12px;">#SM-0887 by John O.</div>
+                            <small style="color:var(--gray-500);">25 min ago</small>
+                        </div>
+                        <div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                            <div style="font-size:12px;font-weight:600;">🟡 Payment Received</div>
+                            <div style="font-size:12px;">₦95,000 from Mrs. Chioma</div>
+                            <small style="color:var(--gray-500);">1 hour ago</small>
+                        </div>
+                        <div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                            <div style="font-size:12px;font-weight:600;">🔴 Payment Overdue</div>
+                            <div style="font-size:12px;">Mr. Obi - ₦115,000 (15d)</div>
+                            <small style="color:var(--red);">2 hours ago</small>
+                        </div>
+                        <div style="padding:10px 0;">
+                            <div style="font-size:12px;font-weight:600;">🟢 New Installer</div>
+                            <div style="font-size:12px;">Fatima B. registered (Abuja)</div>
+                            <small style="color:var(--gray-500);">3 hours ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="content-card">
+            <div class="card-top"><h5>⚡ Quick Actions</h5></div>
+            <div class="card-body-wrap">
+                <div class="quick-actions">
+                    <button class="quick-action-chip btn-primary-lg" onclick="openModal('addLeadModal')">➕ Add New Lead</button>
+                    <button class="quick-action-chip" style="background:var(--green);color:white;" onclick="openModal('addInstallerModal')">👷 Add Installer</button>
+                    <button class="quick-action-chip" style="background:var(--blue);color:white;" onclick="openModal('addAgentModal')">🎧 Add Agent</button>
+                    <button class="quick-action-chip btn-outline-lg" onclick="switchPage('jobs')">📋 View Jobs</button>
+                    <button class="quick-action-chip btn-outline-lg" onclick="switchPage('payments')">💳 Review Payments</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== ANALYTICS PAGE ========== -->
+    <div class="page" id="page-analytics">
+        <div class="page-header"><h3>📈 Analytics</h3><span class="breadcrumb-text">Home / Analytics</span></div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="content-card">
+                    <div class="card-top"><h5>Lead Conversion Funnel</h5></div>
+                    <div class="card-body-wrap"><div class="chart-container"><canvas id="funnelChart"></canvas></div></div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="content-card">
+                    <div class="card-top"><h5>Installer Performance</h5></div>
+                    <div class="card-body-wrap"><div class="chart-container"><canvas id="installerChart"></canvas></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== LEADS PAGE ========== -->
+    <div class="page" id="page-leads">
+        <div class="page-header">
+            <h3>👥 Leads Management</h3>
+            <span class="breadcrumb-text">Management / Leads</span>
+        </div>
+        <div class="content-card">
+            <div class="card-top">
+                <h5>All Leads (47)</h5>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" class="form-input-modern" style="width:200px;" placeholder="🔍 Search leads...">
+                    <button class="btn-primary-lg" onclick="openModal('addLeadModal')">➕ Add Lead</button>
+                </div>
+            </div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Location</th>
+                                <th>System</th>
+                                <th>Status</th>
+                                <th>Agent</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#e8f4fd;color:#4A90D9;">AB</div><strong>Ade Bello</strong></div></td>
+                                <td>0803 123 4567</td>
+                                <td>Ikeja, Lagos</td>
+                                <td>3kVA Smart Home</td>
+                                <td><span class="status-badge sb-new">New</span></td>
+                                <td>Sarah J.</td>
+                                <td>10 Jun</td>
+                                <td>
+                                    <button class="btn-sm-action btn-view" onclick="viewItem('lead','Ade Bello')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-sm-action btn-success-action" onclick="openModal('assignModal')"><i class="bi bi-person-plus"></i></button>
+                                    <button class="btn-sm-action btn-wa" onclick="showToast('💬 Opening WhatsApp...','info')"><i class="bi bi-whatsapp"></i></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#fef8ee;color:#E67E22;">CE</div><strong>Chioma Eze</strong></div></td>
+                                <td>0806 234 5678</td>
+                                <td>Wuse, Abuja</td>
+                                <td>5kVA Business</td>
+                                <td><span class="status-badge sb-contacted">Contacted</span></td>
+                                <td>Mike A.</td>
+                                <td>11 Jun</td>
+                                <td>
+                                    <button class="btn-sm-action btn-view" onclick="viewItem('lead','Chioma Eze')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-sm-action btn-edit"><i class="bi bi-arrow-repeat"></i> Convert</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><input type="checkbox"></td>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#e6f7ee;color:#27AE60;">AM</div><strong>Alhaji Musa</strong></div></td>
+                                <td>0802 345 6789</td>
+                                <td>GRA, Kano</td>
+                                <td>10kVA Premium</td>
+                                <td><span class="status-badge sb-converted">Converted</span></td>
+                                <td>John O.</td>
+                                <td>12 Jun</td>
+                                <td>
+                                    <button class="btn-sm-action btn-view" onclick="viewItem('lead','Alhaji Musa')"><i class="bi bi-eye"></i></button>
+                                    <button class="btn-sm-action btn-success-action">Create Job</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-wrap">
+                    <span>Showing 1-4 of 47 leads</span>
+                    <div class="pagination-btns">
+                        <button class="page-btn">←</button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">→</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== CUSTOMERS PAGE ========== -->
+    <div class="page" id="page-customers">
+        <div class="page-header"><h3>👤 Customers</h3><span class="breadcrumb-text">Management / Customers</span></div>
+        <div class="content-card">
+            <div class="card-top"><h5>All Customers (89)</h5><button class="btn-primary-lg">➕ Add Customer</button></div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead><tr><th>Customer</th><th>Phone</th><th>Location</th><th>System</th><th>Plan</th><th>Status</th><th>Installer</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#e8f4fd;color:#4A90D9;">AB</div><strong>Ade Bello</strong></div></td>
+                                <td>0803 123 4567</td><td>Ikeja, Lagos</td><td>3kVA Home</td><td>24-Month BNPL</td>
+                                <td><span class="status-badge sb-active">Active</span></td><td>John Okafor</td>
+                                <td><button class="btn-sm-action btn-view"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-wa"><i class="bi bi-whatsapp"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#fef9e7;color:#F5A623;">CE</div><strong>Chioma Eze</strong></div></td>
+                                <td>0806 234 5678</td><td>Wuse, Abuja</td><td>5kVA Business</td><td>Full Payment</td>
+                                <td><span class="status-badge sb-inprogress">Installing</span></td><td>Fatima Bello</td>
+                                <td><button class="btn-sm-action btn-view"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-wa"><i class="bi bi-whatsapp"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== INSTALLERS PAGE ========== -->
+    <div class="page" id="page-installers">
+        <div class="page-header"><h3>👷 Installers</h3><span class="breadcrumb-text">Management / Installers</span></div>
+        <div class="content-card">
+            <div class="card-top"><h5>All Installers (12)</h5><button class="btn-primary-lg" onclick="openModal('addInstallerModal')">➕ Add Installer</button></div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead><tr><th>Installer</th><th>Phone</th><th>Region</th><th>Rating</th><th>Jobs Done</th><th>Active</th><th>Earnings</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:var(--dark);color:white;">JO</div><strong>John Okafor</strong></div></td>
+                                <td>0803 111 2222</td><td>Lagos</td><td><span class="rating-stars">★★★★★</span> 4.9</td>
+                                <td>142</td><td>3</td><td>₦2.8M</td>
+                                <td><span class="status-badge sb-active">Active</span></td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('installer','John Okafor')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-pencil"></i></button> <button class="btn-sm-action btn-success-action"><i class="bi bi-briefcase"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:var(--dark-light);color:white;">FB</div><strong>Fatima Bello</strong></div></td>
+                                <td>0806 222 3333</td><td>Abuja</td><td><span class="rating-stars">★★★★☆</span> 4.8</td>
+                                <td>98</td><td>2</td><td>₦1.9M</td>
+                                <td><span class="status-badge sb-active">Active</span></td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('installer','Fatima Bello')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-pencil"></i></button> <button class="btn-sm-action btn-success-action"><i class="bi bi-briefcase"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== AGENTS PAGE ========== -->
+    <div class="page" id="page-agents">
+        <div class="page-header"><h3>🎧 Support Agents</h3><span class="breadcrumb-text">Management / Agents</span></div>
+        <div class="content-card">
+            <div class="card-top"><h5>All Agents (8)</h5><button class="btn-primary-lg" onclick="openModal('addAgentModal')">➕ Add Agent</button></div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead><tr><th>Agent</th><th>Phone</th><th>Role</th><th>Leads</th><th>Conversions</th><th>Rate</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#e8f4fd;color:#4A90D9;">SJ</div><strong>Sarah Johnson</strong></div></td>
+                                <td>0805 555 1111</td><td>Senior Sales</td><td>89</td><td>45</td>
+                                <td><span class="status-badge sb-converted">50.5%</span></td>
+                                <td><span class="status-badge sb-active">Online</span></td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('agent','Sarah Johnson')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-pencil"></i></button> <button class="btn-sm-action btn-success-action"><i class="bi bi-people"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><div class="customer-cell"><div class="cust-avatar" style="background:#fef8ee;color:#E67E22;">MA</div><strong>Mike Adewale</strong></div></td>
+                                <td>0807 555 2222</td><td>Sales Agent</td><td>62</td><td>28</td>
+                                <td><span class="status-badge sb-contacted">45.1%</span></td>
+                                <td><span class="status-badge sb-active">Online</span></td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('agent','Mike Adewale')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-pencil"></i></button> <button class="btn-sm-action btn-success-action"><i class="bi bi-people"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== JOBS PAGE ========== -->
+    <div class="page" id="page-jobs">
+        <div class="page-header"><h3>🔧 Installation Jobs</h3><span class="breadcrumb-text">Management / Jobs</span></div>
+        <div class="content-card">
+            <div class="card-top">
+                <h5>Active Jobs (23)</h5>
+                <div style="display:flex;gap:8px;">
+                    <select class="form-input-modern" style="width:150px;"><option>All Status</option><option>Scheduled</option><option>In Progress</option><option>Completed</option></select>
+                    <button class="btn-primary-lg">➕ Create Job</button>
+                </div>
+            </div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead><tr><th>Job ID</th><th>Customer</th><th>System</th><th>Installer</th><th>Status</th><th>Payment</th><th>Schedule</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#SM-0891</strong></td><td>Ade Bello</td><td>3kVA Home</td><td>John Okafor</td>
+                                <td><span class="status-badge sb-inprogress">In Progress</span></td>
+                                <td><span class="status-badge sb-paid">Paid</span></td><td>Today, 8AM</td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('job','SM-0891')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-arrow-repeat"></i></button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>#SM-0893</strong></td><td>Chioma Eze</td><td>5kVA Business</td><td>Fatima Bello</td>
+                                <td><span class="status-badge sb-pending">Scheduled</span></td>
+                                <td><span class="status-badge sb-paid">Paid</span></td><td>Today, 2PM</td>
+                                <td><button class="btn-sm-action btn-view" onclick="viewItem('job','SM-0893')"><i class="bi bi-eye"></i></button> <button class="btn-sm-action btn-edit"><i class="bi bi-arrow-repeat"></i></button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== FINANCE PAGE ========== -->
+    <div class="page" id="page-finance">
+        <div class="page-header"><h3>💰 Finance Overview</h3><span class="breadcrumb-text">Finance / Overview</span></div>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon-wrap green-bg">💰</div><div><div class="stat-value">₦18.5M</div><div class="stat-label">Total Revenue (June)</div><div class="stat-trend up">↑ 15% vs May</div></div></div>
+            <div class="stat-card"><div class="stat-icon-wrap blue-bg">📊</div><div><div class="stat-value">₦3.2M</div><div class="stat-label">MRR</div><div class="stat-trend neutral">34 active plans</div></div></div>
+            <div class="stat-card"><div class="stat-icon-wrap orange-bg">⚠️</div><div><div class="stat-value">₦4.1M</div><div class="stat-label">Outstanding</div><div class="stat-trend neutral">18 customers</div></div></div>
+            <div class="stat-card"><div class="stat-icon-wrap red-bg">📉</div><div><div class="stat-value">₦850K</div><div class="stat-label">Overdue</div><div class="stat-trend down">5 customers</div></div></div>
+        </div>
+    </div>
+
+    <!-- ========== PAYMENTS PAGE ========== -->
+    <div class="page" id="page-payments">
+        <div class="page-header"><h3>💳 Payment Tracking</h3><span class="breadcrumb-text">Finance / Payments</span></div>
+        <div class="content-card">
+            <div class="card-top"><h5>Installment Payments</h5><button class="btn-outline-lg">📥 Export</button></div>
+            <div class="card-body-wrap">
+                <div class="table-wrap">
+                    <table class="modern-table">
+                        <thead><tr><th>Customer</th><th>Plan</th><th>Amount</th><th>Due Date</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Ade Bello</strong></td><td>3kVA - 24mo</td><td>₦95,000</td><td>15 Jul 2026</td>
+                                <td><span class="status-badge sb-paid">Current</span></td>
+                                <td><button class="btn-sm-action btn-wa"><i class="bi bi-whatsapp"></i> Remind</button></td>
+                            </tr>
+                            <tr class="row-overdue">
+                                <td><strong>Charles Obi</strong></td><td>3kVA - 18mo</td><td>₦115,000</td><td>01 Jun 2026</td>
+                                <td><span class="status-badge sb-overdue">Overdue 15d</span></td>
+                                <td><button class="btn-sm-action btn-danger-action"><i class="bi bi-telephone"></i> Call</button> <button class="btn-sm-action btn-view">Escalate</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== PRODUCTS PAGE ========== -->
+    <div class="page" id="page-products">
+        <div class="page-header"><h3>📦 Products & Pricing</h3><span class="breadcrumb-text">System / Products</span></div>
+        <div class="row g-4">
+            <div class="col-lg-4"><div class="content-card" style="text-align:center;"><div class="card-body-wrap"><span class="status-badge sb-new mb-2">BASIC</span><h4>1kVA System</h4><div style="font-size:28px;font-weight:700;">₦850,000</div><p style="color:var(--gray-500);">4 Panels • 2 Batteries</p><button class="btn-sm-action btn-edit">Edit Package</button></div></div></div>
+            <div class="col-lg-4"><div class="content-card" style="text-align:center;border:2px solid var(--primary);"><div class="card-body-wrap"><span style="background:var(--primary);color:var(--dark);padding:4px 16px;border-radius:12px;font-size:10px;font-weight:700;">MOST POPULAR</span><br><span class="status-badge sb-active mt-2 mb-2">STANDARD</span><h4>3kVA System</h4><div style="font-size:28px;font-weight:700;">₦1,850,000</div><p style="color:var(--gray-500);">6 Panels • 4 Batteries</p><button class="btn-sm-action btn-edit">Edit Package</button></div></div></div>
+            <div class="col-lg-4"><div class="content-card" style="text-align:center;"><div class="card-body-wrap"><span class="status-badge sb-converted mb-2">PREMIUM</span><h4>5kVA System</h4><div style="font-size:28px;font-weight:700;">₦3,200,000</div><p style="color:var(--gray-500);">10 Panels • 6 Batteries</p><button class="btn-sm-action btn-edit">Edit Package</button></div></div></div>
+        </div>
+    </div>
+
+    <!-- ========== SETTINGS PAGE ========== -->
+    <div class="page" id="page-settings">
+        <div class="page-header"><h3>⚙️ System Settings</h3></div>
+        <div class="content-card">
+            <div class="card-body-wrap">
+                <div style="display:grid;gap:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-100);border-radius:10px;"><div><strong>WhatsApp Notifications</strong><br><small style="color:var(--gray-500);">Auto-send updates to customers</small></div><input type="checkbox" checked></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-100);border-radius:10px;"><div><strong>Auto-Assign Installers</strong><br><small style="color:var(--gray-500);">Assign nearest available installer</small></div><input type="checkbox" checked></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:14px;background:var(--gray-100);border-radius:10px;"><div><strong>Payment Reminders</strong><br><small style="color:var(--gray-500);">Auto-remind 3 days before due</small></div><input type="checkbox" checked></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== REPORTS PAGE ========== -->
+    <div class="page" id="page-reports">
+        <div class="page-header"><h3>📊 Reports</h3></div>
+        <div class="row g-3">
+            <div class="col-md-3"><button class="btn-outline-lg w-100" style="padding:24px;text-align:center;">📥 Revenue Report</button></div>
+            <div class="col-md-3"><button class="btn-outline-lg w-100" style="padding:24px;text-align:center;">📥 Installer Report</button></div>
+            <div class="col-md-3"><button class="btn-outline-lg w-100" style="padding:24px;text-align:center;">📥 Leads Report</button></div>
+            <div class="col-md-3"><button class="btn-outline-lg w-100" style="padding:24px;text-align:center;">📥 Payment Report</button></div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ==================== MODALS ==================== -->
+<div class="modal-overlay" id="addLeadModal">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-clean"><h5>➕ Add New Lead</h5><button class="modal-close-btn" onclick="closeModal('addLeadModal')">✕</button></div>
+        <div class="modal-body-clean">
+            <div class="form-group"><label>Full Name *</label><input type="text" class="form-input-modern" placeholder="Enter full name"></div>
+            <div class="form-group"><label>WhatsApp Number *</label><div style="display:flex;gap:8px;"><select class="form-input-modern" style="width:100px;"><option>+234</option></select><input type="tel" class="form-input-modern" placeholder="8031234567"></div></div>
+            <div class="form-group"><label>Location *</label><select class="form-input-modern"><option>Select State</option><option>Lagos</option><option>Abuja</option><option>Kano</option></select></div>
+            <div class="form-group"><label>System Interest</label><select class="form-input-modern"><option>1kVA Basic</option><option>3kVA Standard</option><option>5kVA Premium</option></select></div>
+            <div class="form-group"><label>Assign Agent</label><select class="form-input-modern"><option>Auto-assign</option><option>Sarah Johnson</option><option>Mike Adewale</option></select></div>
+        </div>
+        <div class="modal-footer-clean"><button class="btn-outline-lg" onclick="closeModal('addLeadModal')">Cancel</button><button class="btn-primary-lg" onclick="saveItem('lead')">💾 Save Lead</button></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="addInstallerModal">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-clean"><h5>👷 Add New Installer</h5><button class="modal-close-btn" onclick="closeModal('addInstallerModal')">✕</button></div>
+        <div class="modal-body-clean">
+            <div class="form-group"><label>Full Name *</label><input type="text" class="form-input-modern" placeholder="Enter name"></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" class="form-input-modern" placeholder="Enter phone"></div>
+            <div class="form-group"><label>Region *</label><select class="form-input-modern"><option>Lagos</option><option>Abuja</option><option>Kano</option></select></div>
+            <div class="form-group"><label>Experience</label><select class="form-input-modern"><option>Junior</option><option>Mid-Level</option><option>Senior</option></select></div>
+        </div>
+        <div class="modal-footer-clean"><button class="btn-outline-lg" onclick="closeModal('addInstallerModal')">Cancel</button><button class="btn-primary-lg" onclick="saveItem('installer')">💾 Save</button></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="addAgentModal">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-clean"><h5>🎧 Add Support Agent</h5><button class="modal-close-btn" onclick="closeModal('addAgentModal')">✕</button></div>
+        <div class="modal-body-clean">
+            <div class="form-group"><label>Full Name *</label><input type="text" class="form-input-modern" placeholder="Enter name"></div>
+            <div class="form-group"><label>Phone *</label><input type="tel" class="form-input-modern" placeholder="Enter phone"></div>
+            <div class="form-group"><label>Role</label><select class="form-input-modern"><option>Sales Agent</option><option>Senior Agent</option><option>Team Lead</option></select></div>
+        </div>
+        <div class="modal-footer-clean"><button class="btn-outline-lg" onclick="closeModal('addAgentModal')">Cancel</button><button class="btn-primary-lg" onclick="saveItem('agent')">💾 Save</button></div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="assignModal">
+    <div class="modal-dialog-custom">
+        <div class="modal-header-clean"><h5>🔄 Assign</h5><button class="modal-close-btn" onclick="closeModal('assignModal')">✕</button></div>
+        <div class="modal-body-clean">
+            <div class="form-group"><label>Assign To</label><select class="form-input-modern"><optgroup label="Agents"><option>Sarah Johnson</option><option>Mike Adewale</option></optgroup><optgroup label="Installers"><option>John Okafor</option><option>Fatima Bello</option></optgroup></select></div>
+            <div class="form-group"><label>Priority</label><select class="form-input-modern"><option>Normal</option><option>High</option><option>Urgent</option></select></div>
+        </div>
+        <div class="modal-footer-clean"><button class="btn-outline-lg" onclick="closeModal('assignModal')">Cancel</button><button class="btn-primary-lg" onclick="saveItem('assign')">✅ Confirm</button></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ==================== PAGE NAVIGATION ====================
+    function switchPage(pageName) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const target = document.getElementById('page-' + pageName);
+        if (target) target.classList.add('active');
+        document.querySelectorAll('.sidebar .nav-item').forEach(item => item.classList.remove('active'));
+        document.getElementById('mainContent').scrollTop = 0;
+        document.getElementById('sidebar').classList.remove('mobile-open');
+        if (pageName === 'dashboard') initCharts();
+        if (pageName === 'analytics') initAnalyticsCharts();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('mobile-open');
+    }
+
+    // ==================== MODALS ====================
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    document.addEventListener('click', e => { if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('show'); });
+
+    // ==================== SAVE / VIEW ====================
+    function saveItem(type) {
+        const modals = { lead: 'addLeadModal', installer: 'addInstallerModal', agent: 'addAgentModal', assign: 'assignModal' };
+        closeModal(modals[type]);
+        showToast(`✅ ${type.charAt(0).toUpperCase() + type.slice(1)} saved successfully!`, 'success');
+    }
+    function viewItem(type, name) {
+        showToast(`👁️ Viewing ${type}: ${name}`, 'info');
+    }
+
+    // ==================== TOAST ====================
+    function showToast(msg, type = 'info') {
+        const existing = document.querySelector('.toast-modern');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.className = `toast-modern ${type}`;
+        toast.innerHTML = `<span>${msg}</span>`;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2800);
+    }
+
+    // ==================== SIDEBAR ACTIVE STATE ====================
+    document.querySelectorAll('.sidebar .nav-item').forEach(item => {
+        item.addEventListener('click', function() {
+            document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // ==================== CHARTS ====================
+    function initCharts() {
+        const ctx = document.getElementById('revenueChart');
+        if (!ctx) return;
+        if (ctx._chart) ctx._chart.destroy();
+        ctx._chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue (₦)',
+                    data: [8000000, 10000000, 12000000, 15000000, 16000000, 18500000],
+                    backgroundColor: 'rgba(245,166,35,0.6)',
+                    borderColor: '#F5A623',
+                    borderWidth: 2,
+                    borderRadius: 8
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    }
+
+    function initAnalyticsCharts() {
+        const funnelCtx = document.getElementById('funnelChart');
+        if (funnelCtx && !funnelCtx._chart) {
+            funnelCtx._chart = new Chart(funnelCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Leads', 'Contacted', 'Quoted', 'Converted'],
+                    datasets: [{ data: [247, 180, 120, 89], backgroundColor: ['#4A90D9','#E67E22','#F5A623','#27AE60'], borderRadius: 8 }]
+                },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            });
+        }
+        const installerCtx = document.getElementById('installerChart');
+        if (installerCtx && !installerCtx._chart) {
+            installerCtx._chart = new Chart(installerCtx, {
+                type: 'doughnut',
+                data: { labels: ['John O.','Fatima B.','Musa A.','Others'], datasets: [{ data: [142,98,76,56], backgroundColor: ['#F5A623','#4A90D9','#27AE60','#E67E22'] }] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+    }
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('✅ SolarMax Admin Premium Ready');
+        initCharts();
+    });
+</script>
+
+</body>
+</html>
